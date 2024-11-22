@@ -1,0 +1,10 @@
+
+
+POST  http://localhpst:3000/videos
+Content-type: application/json
+
+{
+    "tittle": "Vídeo 01",
+    "description": "Vídeo sobre nodejs",
+    "duration": 200 
+}
