@@ -1,10 +1,5 @@
 
 
-POST  http://127.0.0.1:3000/videos
+POST  http://127.0.0.1:3000/usuarios
 Content-type: application/json
 
-{
-    "title": "Vídeo 01",
-    "description": "Vídeo sobre nodejs",
-    "duration": 200 
-}

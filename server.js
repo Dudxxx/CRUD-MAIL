@@ -14,7 +14,7 @@ await server.register(cors, {
   origin: '*', // Configuração que permite requisições de qualquer domínio (usar com cautela em produção)
 });
 
-server.post("/videos", async (request, reply) => {
+server.post("/usuarios", async (request, reply) => {
     const { title, description, duration } = request.body;
   
     await database.create({
@@ -26,13 +26,13 @@ server.post("/videos", async (request, reply) => {
     return reply.status(201).send();
   });
   
-  server.get("/videos", async (request, reply) => {                                    
+  server.get("/usuarios", async (request, reply) => {                                    
     const {search} = request.query
-    const videos = await database.list(search);
-    return videos;
+    const usuarios = await database.list(search);
+    return usuarios;
   });
   
-  server.put("/videos/:id", async (request, reply) => {
+  server.put("/usuarios/:id", async (request, reply) => {
     const videoId = request.params.id;
     const { title, description, duration } = request.body;
   
@@ -45,7 +45,7 @@ server.post("/videos", async (request, reply) => {
     return reply.status(204).send();
   });
   
-  server.delete("/videos/:id", async (request, reply) => {
+  server.delete("/usuarios/:id", async (request, reply) => {
     const videoId = request.params.id;
   
     await database.delete(videoId);
