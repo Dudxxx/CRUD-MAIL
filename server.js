@@ -1,4 +1,5 @@
 import { fastify } from "fastify"
+import cors from '@fastify/cors' // Importa o plugin CORS para permitir requisições de diferentes origens
 import 'dotenv/config'
 import { DatabasePostgres } from "./database-postgres.js";
 
@@ -8,6 +9,10 @@ import { DatabasePostgres } from "./database-postgres.js";
 const server = fastify()
 // Instancia do Banco de Dados
 const database = new DatabasePostgres();
+
+await server.register(cors, {
+  origin: '*', // Configuração que permite requisições de qualquer domínio (usar com cautela em produção)
+});
 
 server.post("/videos", async (request, reply) => {
     const { title, description, duration } = request.body;
@@ -22,6 +27,7 @@ server.post("/videos", async (request, reply) => {
   });
   
   server.get("/videos", async (request, reply) => {                                    
+    const {search} = request.query
     const videos = await database.list(search);
     return videos;
   });
