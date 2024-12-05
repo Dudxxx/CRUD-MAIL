@@ -2,8 +2,7 @@ import { randomUUID } from "node:crypto";
 import { sql } from "./bd.js";
 
 export class DatabasePostgres {
-
-    
+  
   async list(search) {
     let usuarios;
 
@@ -20,9 +19,9 @@ export class DatabasePostgres {
 
   async create(usuario) {
     const usuarioId = randomUUID();
-    const { nome, email, celular } = usuarios;
+    const { nome, email, celular } = usuario;  // Alterado de 'usuarios' para 'usuario'
 
-    await sql`insert into usuarios (id, nome, email, celular) VALUES (${usuarioId}, ${nome}, ${email}, ${celular})`;
+    await sql`insert into usuarios (id, nome, email, celular) VALUES (${usuarioId}, ${nome}, ${email}, ${celular})`;  
   }
 
   async update(id, usuario) {

@@ -1,58 +1,43 @@
-import { fastify } from "fastify"
-import cors from '@fastify/cors' // Importa o plugin CORS para permitir requisições de diferentes origens
-import 'dotenv/config'
+import { fastify } from "fastify";
+import cors from '@fastify/cors'; // Importa o plugin CORS para permitir requisições de diferentes origens
+import 'dotenv/config';
 import { DatabasePostgres } from "./database-postgres.js";
 
-
-
 // Instancia do servidor
-const server = fastify()
+const server = fastify();
 // Instancia do Banco de Dados
 const database = new DatabasePostgres();
 
 await server.register(cors, {
-  origin: '*', // Configuração que permite requisições de qualquer domínio (usar com cautela em produção)
+  origin: '*', // Permite requisições de qualquer origem (pode ser ajustado para produção)
 });
 
+server.get("/usuarios", async (request, reply) => {                                    
+  const {search} = request.query
+  const usuarios = await database.list(search);
+  return usuarios;
+});
+
+
 server.post("/usuarios", async (request, reply) => {
-    const { title, description, duration } = request.body;
-  
-    await database.create({
-      title: title,
-      description: description,
-      duration: duration,
-    });
-  
-    return reply.status(201).send();
-  });
-  
-  server.get("/usuarios", async (request, reply) => {                                    
-    const {search} = request.query
-    const usuarios = await database.list(search);
-    return usuarios;
-  });
-  
-  server.put("/usuarios/:id", async (request, reply) => {
-    const videoId = request.params.id;
-    const { title, description, duration } = request.body;
-  
-    await database.update(videoId, {
-      title,
-      description,
-      duration,
-    });
-  
-    return reply.status(204).send();
-  });
-  
-  server.delete("/usuarios/:id", async (request, reply) => {
-    const videoId = request.params.id;
-  
-    await database.delete(videoId);
-    return reply.status(204).send();
-  });
-  
-  server.listen({
-    host: "0.0.0.0", // configuração para funcionar no render
-    port: process.env.PORT ?? 3333, // configuração para funcionar no render
-  });
+  const { nome, email, celular } = request.body;
+
+  // Validação básica para garantir que todos os campos estão presentes
+  if (!nome || !email || !celular) {
+    return reply.status(400).send({ error: "Todos os campos são obrigatórios." });
+  }
+
+  try {
+    // Chama o método 'create' para adicionar o novo usuário
+    await database.create({ nome, email, celular });
+    return reply.status(201).send({ message: "Usuário criado com sucesso!" });
+  } catch (error) {
+    console.error(error);
+    return reply.status(500).send({ error: "Erro ao cadastrar o usuário." });
+  }
+});
+
+server.listen({
+  host: "0.0.0.0", // Configuração para render (pode ser ajustado para localhost)
+  port: process.env.PORT ?? 3333, // Usando a porta configurada no arquivo .env
+});
