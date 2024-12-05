@@ -41,3 +41,37 @@ server.listen({
   host: "0.0.0.0", // Configuração para render (pode ser ajustado para localhost)
   port: process.env.PORT ?? 3333, // Usando a porta configurada no arquivo .env
 });
+
+server.delete("/usuarios/:id", async (request, reply) => {
+  const { id } = request.params;
+
+  if (!id) {
+    return reply.status(400).send({ error: "ID do usuário é obrigatório." });
+  }
+
+  try {
+    await database.delete(id); // Chama o método delete no banco de dados
+    return reply.status(200).send({ message: "Usuário deletado com sucesso!" });
+  } catch (error) {
+    console.error(error);
+    return reply.status(500).send({ error: "Erro ao deletar o usuário." });
+  }
+});
+
+server.put("/usuarios/:id", async (request, reply) => {
+  const { id } = request.params;
+  const { nome, email, celular } = request.body;
+
+  if (!id || !nome || !email || !celular) {
+    return reply.status(400).send({ error: "Todos os campos são obrigatórios." });
+  }
+
+  try {
+    await database.update(id, { nome, email, celular });
+    return reply.status(200).send({ message: "Usuário atualizado com sucesso!" });
+  } catch (error) {
+    console.error(error);
+    return reply.status(500).send({ error: "Erro ao atualizar o usuário." });
+  }
+});
+
